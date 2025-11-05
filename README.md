@@ -1,16 +1,78 @@
-# React + Vite
+# Bus&Share - Коммерческое предложение
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Лендинг для платформы автобусных рейсов и карпулинга (B2C + B2B).
 
-Currently, two official plugins are available:
+## Технологии
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React + Vite
+- TailwindCSS
+- Framer Motion
 
-## React Compiler
+## Локальная разработка
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Установка зависимостей
+npm install
 
-## Expanding the ESLint configuration
+# Запуск dev-сервера
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Деплой на GitHub Pages
+
+### Шаг 1: Подготовка
+
+1. Установите пакет `gh-pages`:
+```bash
+npm install --save-dev gh-pages
+```
+
+2. **Важно**: Обновите `base` в `vite.config.js`:
+   - Если ваш репозиторий называется `my-proposal-app`, оставьте как есть
+   - Если репозиторий называется `username.github.io`, измените на `base: '/'`
+   - Если репозиторий называется по-другому, замените `'my-proposal-app'` на имя вашего репозитория
+
+### Шаг 2: Создание репозитория на GitHub
+
+1. Создайте новый репозиторий на GitHub (не инициализируйте с README)
+
+2. Инициализируйте git в проекте (если еще не сделано):
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+3. Подключите удаленный репозиторий:
+```bash
+git remote add origin https://github.com/ВАШ_USERNAME/ВАШ_РЕПОЗИТОРИЙ.git
+git branch -M main
+git push -u origin main
+```
+
+### Шаг 3: Деплой
+
+Запустите команду деплоя:
+```bash
+npm run deploy
+```
+
+Эта команда:
+1. Соберет проект (`npm run build`)
+2. Загрузит папку `dist` в ветку `gh-pages` на GitHub
+
+### Шаг 4: Включение GitHub Pages
+
+1. Перейдите в настройки репозитория: `Settings` → `Pages`
+2. В разделе `Source` выберите:
+   - Branch: `gh-pages`
+   - Folder: `/ (root)`
+3. Нажмите `Save`
+
+Ваш сайт будет доступен по адресу:
+- `https://ВАШ_USERNAME.github.io/ВАШ_РЕПОЗИТОРИЙ/`
+
+### Важно
+
+- После каждого изменения запускайте `npm run deploy` для обновления сайта
+- Если изменили название репозитория, не забудьте обновить `base` в `vite.config.js`
