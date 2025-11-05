@@ -196,7 +196,7 @@ export default function CommercialProposalLanding() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 items-stretch">
             <PackageCard 
               title="Базовый"
-              price="от ₽XXX"
+              price="от ₽360.000"
               description="Для старта и тестирования платформы"
               features={[
                 "Базовый функционал",
@@ -209,7 +209,7 @@ export default function CommercialProposalLanding() {
             />
             <PackageCard 
               title="Стандарт"
-              price="от ₽XXX"
+              price="от ₽680.000"
               description="Для растущего бизнеса"
               features={[
                 "Все функции Базового",
@@ -223,7 +223,7 @@ export default function CommercialProposalLanding() {
             />
             <PackageCard 
               title="Премиум"
-              price="от ₽XXX"
+              price="от ₽1.200.000"
               description="Для крупных операторов"
               features={[
                 "Все функции Стандарт",
@@ -253,8 +253,8 @@ export default function CommercialProposalLanding() {
               <li>• План запуска пилота на 6–8 недель</li>
             </ul>
 
-            <a href="https://t.me/CDI_Agency" target="_blank" rel="noopener noreferrer" className="mt-8 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 inline-block hover:bg-white/20 transition-all duration-200 cursor-pointer">
-              <p className="text-lg font-semibold text-white">
+            <a href="https://t.me/CDI_Agency" target="_blank" rel="noopener noreferrer" className="mt-8 p-6 bg-amber-400 rounded-xl border-2 border-amber-500 inline-block hover:bg-amber-500 transition-all duration-200 cursor-pointer shadow-lg hover:shadow-xl">
+              <p className="text-lg font-semibold text-gray-900">
                 Готовы сотрудничать или посмотреть демо? Напишите в Telegram
               </p>
             </a>
@@ -391,9 +391,9 @@ function PackageCard({ title, price, period, description, features, buttonText, 
       
       <div className="relative text-center mb-8">
         <h3 className="text-2xl lg:text-3xl font-extrabold text-gray-900 mb-3">{title}</h3>
-        <div className="flex items-baseline justify-center gap-2 mb-4">
-          <span className="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent">{price}</span>
-          {period && <span className="text-gray-500 text-sm">{period}</span>}
+        <div className="flex items-baseline justify-center gap-2 mb-4 flex-nowrap">
+          <span className="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent leading-tight whitespace-nowrap inline-block">{price}</span>
+          {period && <span className="text-gray-500 text-sm whitespace-nowrap">{period}</span>}
         </div>
         <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
       </div>
