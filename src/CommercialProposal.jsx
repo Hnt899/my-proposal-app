@@ -1,30 +1,178 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Коммерческое предложение - лендинг для платформы автобусных рейсов + карпулинг (B2C + B2B)
 // Технологии: React + TailwindCSS + Framer Motion
 // Как использовать: поместите файл в src/components/CommercialProposalLanding.jsx и подключите в маршруте.
 
 export default function CommercialProposalLanding() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  // Функция плавной прокрутки
+  const handleSmoothScroll = (e, targetId) => {
+    e.preventDefault()
+    const element = document.querySelector(targetId)
+    if (element) {
+      const headerOffset = 80
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
+    setIsMenuOpen(false) // Закрываем меню после клика
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 antialiased">
+    <div className="min-h-screen bg-gray-50 text-gray-900 antialiased" style={{ scrollBehavior: 'smooth' }}>
       {/* ---------- NAV ---------- */}
-      <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-sm border-b border-gray-200">
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <div className="text-2xl font-extrabold text-indigo-600">Bus&Share</div>
+              {/* Logo in header - visible on desktop always, on mobile only when menu is closed */}
+              <motion.div
+                layoutId="logo"
+                className="text-2xl font-extrabold text-indigo-600"
+                animate={{ 
+                  opacity: isMenuOpen ? 0 : 1,
+                }}
+                transition={{ duration: 0.2 }}
+                style={{ 
+                  pointerEvents: isMenuOpen ? 'none' : 'auto'
+                }}
+              >
+                Bus&Share
+              </motion.div>
               <div className="hidden md:block text-sm text-gray-600">Платформа автобусных рейсов и попуток для пассажиров и перевозчиков</div>
             </div>
-            <nav className="flex items-center gap-4">
-              <a href="#features" className="text-sm text-gray-700 hover:text-indigo-600">Возможности</a>
-              <a href="#how" className="text-sm text-gray-700 hover:text-indigo-600">Как это работает</a>
-              <a href="#plans" className="text-sm text-gray-700 hover:text-indigo-600">Пакеты</a>
-              <a href="https://t.me/CDI_Agency" target="_blank" rel="noopener noreferrer" className="hidden sm:inline-block rounded-md bg-indigo-600 px-4 py-2 text-white text-sm border-2 border-transparent hover:bg-transparent hover:text-indigo-600 hover:border-indigo-600 transition-all duration-200">Связаться</a>
+            
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-4">
+              <a href="#features" onClick={(e) => handleSmoothScroll(e, '#features')} className="text-sm text-gray-700 hover:text-indigo-600 transition-colors">Возможности</a>
+              <a href="#how" onClick={(e) => handleSmoothScroll(e, '#how')} className="text-sm text-gray-700 hover:text-indigo-600 transition-colors">Как это работает</a>
+              <a href="#plans" onClick={(e) => handleSmoothScroll(e, '#plans')} className="text-sm text-gray-700 hover:text-indigo-600 transition-colors">Пакеты</a>
+              <a href="https://t.me/CDI_Agency" target="_blank" rel="noopener noreferrer" className="rounded-md bg-indigo-600 px-4 py-2 text-white text-sm border-2 border-transparent hover:bg-transparent hover:text-indigo-600 hover:border-indigo-600 transition-all duration-200">Связаться</a>
             </nav>
+
+            {/* Mobile Burger Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2 rounded-xl border-2 border-indigo-600 bg-transparent text-indigo-600 hover:text-indigo-700 hover:border-indigo-700 transition-colors"
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {isMenuOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
           </div>
         </div>
+
       </header>
+
+      {/* Mobile Menu Overlay & Sidebar */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            />
+            
+            {/* Sidebar Menu */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-50 md:hidden flex flex-col"
+            >
+              {/* Header with logo and close button */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                <motion.div
+                  layoutId="logo"
+                  className="text-xl font-extrabold text-indigo-600"
+                >
+                  Bus&Share
+                </motion.div>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-2 rounded-xl border-2 border-indigo-600 bg-transparent text-indigo-600 hover:text-indigo-700 hover:border-indigo-700 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="flex-1 px-6 py-6 space-y-1">
+                <a
+                  href="#features"
+                  onClick={(e) => handleSmoothScroll(e, '#features')}
+                  className="block py-3 px-4 text-base text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                >
+                  Возможности
+                </a>
+                <a
+                  href="#how"
+                  onClick={(e) => handleSmoothScroll(e, '#how')}
+                  className="block py-3 px-4 text-base text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                >
+                  Как это работает
+                </a>
+                <a
+                  href="#plans"
+                  onClick={(e) => handleSmoothScroll(e, '#plans')}
+                  className="block py-3 px-4 text-base text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                >
+                  Пакеты
+                </a>
+              </nav>
+
+              {/* CTA Button */}
+              <div className="p-6 border-t border-gray-200">
+                <a
+                  href="https://t.me/CDI_Agency"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-3 px-4 rounded-lg bg-indigo-600 text-white text-center font-semibold hover:bg-indigo-700 transition-colors"
+                >
+                  Связаться
+                </a>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden">
@@ -39,8 +187,8 @@ export default function CommercialProposalLanding() {
               <p className="mt-6 text-gray-600 text-lg sm:text-xl">Поиск, бронирование и оплата официальных автобусных рейсов и карпулинга по модели BlaBlaCar — в одном сервисе. Для пассажиров — удобство и безопасность. Для перевозчиков и партнёров — интеграции, отчётность и рост дохода.</p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <a href="#plans" className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-5 py-3 text-white font-semibold hover:bg-indigo-700">Узнать пакеты</a>
-                <a href="#how" className="inline-flex items-center justify-center rounded-md border border-gray-200 px-5 py-3 text-gray-700 hover:bg-gray-100">Демо и roadmap</a>
+                <a href="#plans" onClick={(e) => handleSmoothScroll(e, '#plans')} className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-5 py-3 text-white font-semibold hover:bg-indigo-700">Узнать пакеты</a>
+                <a href="#how" onClick={(e) => handleSmoothScroll(e, '#how')} className="inline-flex items-center justify-center rounded-md border border-gray-200 px-5 py-3 text-gray-700 hover:bg-gray-100">Демо и roadmap</a>
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -58,34 +206,34 @@ export default function CommercialProposalLanding() {
               className="relative"
             >
               {/* Mockup card - можно заменить на реальные скриншоты */}
-              <div className="rounded-2xl bg-white shadow-xl p-6 lg:p-8">
-                <div className="flex items-center justify-between">
-                  <div>
+              <div className="rounded-2xl bg-white shadow-xl p-4 sm:p-6 lg:p-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex-1">
                     <div className="text-sm text-gray-500">Поиск поездки</div>
                     <div className="mt-2 text-lg font-semibold">Москва → Владимир</div>
                     <div className="text-sm text-gray-400">Дата: 18 янв • 2 места</div>
                   </div>
-                  <div className="text-indigo-600 font-bold text-xl">₽500</div>
+                  <div className="text-indigo-600 font-bold text-xl sm:text-right">₽500</div>
                 </div>
 
-                <div className="mt-4 border-t pt-4 flex items-center justify-between">
+                <div className="mt-4 border-t pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center text-indigo-700 font-bold">DR</div>
-                    <div>
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center text-indigo-700 font-bold flex-shrink-0">DR</div>
+                    <div className="min-w-0">
                       <div className="text-sm font-medium">Иван, водитель</div>
-                      <div className="text-xs text-gray-400">Рейтинг 4.9 • Машина: Mercedes Sprinter</div>
+                      <div className="text-xs text-gray-400 break-words">Рейтинг 4.9 • Машина: Mercedes Sprinter</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button className="px-4 py-2 rounded-md bg-green-50 text-green-700 text-sm font-semibold border border-green-100">Бронировать</button>
-                    <button className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">Поделиться</button>
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                    <button className="px-4 py-2 rounded-md bg-green-50 text-green-700 text-sm font-semibold border border-green-100 hover:bg-green-100 transition-colors">Бронировать</button>
+                    <button className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors">Поделиться</button>
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-gray-500">
-                  <div className="text-center">QR ЭПД</div>
-                  <div className="text-center">Гарантированный платёж</div>
-                  <div className="text-center">Отмена по тарифу</div>
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2 text-xs text-gray-500">
+                  <div className="text-center sm:text-center">QR ЭПД</div>
+                  <div className="text-center sm:text-center">Гарантированный платёж</div>
+                  <div className="text-center sm:text-center">Отмена по тарифу</div>
                 </div>
               </div>
 
@@ -150,8 +298,8 @@ export default function CommercialProposalLanding() {
               </ol>
 
               <div className="mt-6 flex gap-3">
-                <a href="#plans" className="rounded-md bg-indigo-600 px-4 py-2 text-white font-semibold">Пакеты и цены</a>
-                <a href="#contact" className="rounded-md border border-gray-200 px-4 py-2">Запрос демо</a>
+                <a href="#plans" onClick={(e) => handleSmoothScroll(e, '#plans')} className="rounded-md bg-indigo-600 px-4 py-2 text-white font-semibold">Пакеты и цены</a>
+                <a href="#contact" onClick={(e) => handleSmoothScroll(e, '#contact')} className="rounded-md border border-gray-200 px-4 py-2">Запрос демо</a>
               </div>
             </div>
 
@@ -198,6 +346,7 @@ export default function CommercialProposalLanding() {
               title="Базовый"
               price="от ₽360.000"
               description="Для старта и тестирования платформы"
+              developmentTime="1 месяц"
               features={[
                 "Базовый функционал",
                 "До X пользователей",
@@ -211,6 +360,7 @@ export default function CommercialProposalLanding() {
               title="Стандарт"
               price="от ₽680.000"
               description="Для растущего бизнеса"
+              developmentTime="2 месяца"
               features={[
                 "Все функции Базового",
                 "До X пользователей",
@@ -225,6 +375,7 @@ export default function CommercialProposalLanding() {
               title="Премиум"
               price="от ₽1.200.000"
               description="Для крупных операторов"
+              developmentTime="3,5 месяца"
               features={[
                 "Все функции Стандарт",
                 "Неограниченное количество пользователей",
@@ -374,7 +525,7 @@ function RoadmapCard({ title, items }) {
   )
 }
 
-function PackageCard({ title, price, period, description, features, buttonText, isPopular }) {
+function PackageCard({ title, price, period, description, developmentTime, features, buttonText, isPopular }) {
   return (
     <motion.div 
       whileHover={{ y: -12, scale: 1.03 }}
@@ -396,6 +547,14 @@ function PackageCard({ title, price, period, description, features, buttonText, 
           {period && <span className="text-gray-500 text-sm whitespace-nowrap">{period}</span>}
         </div>
         <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
+        {developmentTime && (
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-50 border border-indigo-100">
+            <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-sm font-semibold text-indigo-700">Время разработки: {developmentTime}</span>
+          </div>
+        )}
       </div>
 
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-8"></div>
@@ -419,7 +578,10 @@ function PackageCard({ title, price, period, description, features, buttonText, 
         ))}
       </ul>
 
-      <button 
+      <a
+        href="https://t.me/CDI_Agency"
+        target="_blank"
+        rel="noopener noreferrer"
         className={`w-full min-h-[56px] py-4 rounded-xl font-semibold text-base transition-all duration-300 transform flex items-center justify-center mt-auto ${
           isPopular
             ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:scale-105'
@@ -427,7 +589,7 @@ function PackageCard({ title, price, period, description, features, buttonText, 
         }`}
       >
         {buttonText}
-      </button>
+      </a>
     </motion.div>
   )
 }
